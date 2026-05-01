@@ -5,7 +5,8 @@ Open notebooks/house_price_prediction.ipynb in Google Colab and run all cells.
 - outputs/baseline_metric.json
 - outputs/milestone_manifest.json
 
----# ECO6810 Final Project Starter Repo
+---
+# ECO6810 Final Project Starter Repo
 
 This repo is the home for your team's final project.
 
