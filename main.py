@@ -1,32 +1,93 @@
-from __future__ import annotations
+import pandas as pd
+import numpy as np
+import json
+import os
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
 
-from pathlib import Path
+# Create outputs folder
+os.makedirs('outputs', exist_ok=True)
 
-from project_code.io import write_json
-from project_code.template_outputs import (
-    build_baseline_metric,
-    build_milestone_manifest,
-    build_primary_metric,
-)
+print("=== House Price Prediction ===")
+print("Loading data...")
 
-ROOT = Path(__file__).resolve().parent
-OUTPUTS_DIR = ROOT / "outputs"
+# Load data
+train = pd.read_csv('data/train (1).csv')
+print(f"Data loaded: {train.shape[0]} rows, {train.shape[1]} columns")
 
+# Features
+features = ['LotArea', 'OverallQual', 'GrLivArea',
+            'BedroomAbvGr', 'TotalBsmtSF', 'GarageArea']
 
-def main() -> None:
-    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+data = train[features + ['SalePrice']].dropna()
+X = data[features]
+y = data['SalePrice']
 
-    baseline_metric = build_baseline_metric()
-    primary_metric = build_primary_metric()
-    milestone_manifest = build_milestone_manifest()
+# Split
+X_train, X_val, y_train, y_val = train_test_split(
+    X, y, test_size=0.2, random_state=42)
 
-    write_json(OUTPUTS_DIR / "baseline_metric.json", baseline_metric)
-    write_json(OUTPUTS_DIR / "primary_metric.json", primary_metric)
-    write_json(OUTPUTS_DIR / "milestone_manifest.json", milestone_manifest)
+# Baseline - Linear Regression
+print("\nTraining baseline (Linear Regression)...")
+baseline_model = LinearRegression()
+baseline_model.fit(X_train, y_train)
+baseline_preds = baseline_model.predict(X_val)
+baseline_mae = mean_absolute_error(y_val, baseline_preds)
+print(f"Baseline MAE: ${baseline_mae:,.2f}")
 
-    print("Template outputs written to outputs/.")
-    print("Replace the placeholder fields before you submit the milestone or the final project.")
+# Save baseline
+baseline = {
+    "metric_name": "MAE",
+    "value": round(baseline_mae, 2),
+    "unit": "USD"
+}
+with open('outputs/baseline_metric.json', 'w') as f:
+    json.dump(baseline, f, indent=2)
+print("Saved outputs/baseline_metric.json")
 
+# Main model - Random Forest
+print("\nTraining main model (Random Forest)...")
+rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+rf_preds = rf_model.predict(X_val)
+rf_mae = mean_absolute_error(y_val, rf_preds)
+print(f"Random Forest MAE: ${rf_mae:,.2f}")
 
-if __name__ == "__main__":
-    main()
+# Save primary metric
+threshold = 20000
+passed = bool(rf_mae <= threshold)
+primary = {
+    "metric_name": "MAE",
+    "value": round(rf_mae, 2),
+    "threshold": threshold,
+    "passed": passed
+}
+with open('outputs/primary_metric.json', 'w') as f:
+    json.dump(primary, f, indent=2)
+print("Saved outputs/primary_metric.json")
+
+# Save milestone manifest
+milestone = {
+    "charter_locked": True,
+    "sources": [
+        {
+            "name": "Kaggle House Prices Dataset",
+            "status": "ok",
+            "probe_artifact": "data/train (1).csv"
+        }
+    ],
+    "baseline_ready": True,
+    "primary_metric_schema_ready": True,
+    "run_command": "uv run main.py"
+}
+with open('outputs/milestone_manifest.json', 'w') as f:
+    json.dump(milestone, f, indent=2)
+print("Saved outputs/milestone_manifest.json")
+
+print("\n=== DONE ===")
+print(f"Baseline MAE: ${baseline_mae:,.2f}")
+print(f"Random Forest MAE: ${rf_mae:,.2f}")
+print(f"Target threshold: ${threshold:,}")
+print(f"Passed: {passed}")
