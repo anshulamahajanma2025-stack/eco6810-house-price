@@ -1,3 +1,5 @@
+# Project Charter
+
 ## Header
 - Team size: 1 (Solo project)
 - Estimated hours: 50 hours/person
