@@ -1,8 +1,6 @@
-# Project Charter
-
 ## Header
 - Team size: 1 (Solo project)
-- Estimated hours: 20 hours/person
+- Estimated hours: 50 hours/person
 
 ## Team
 - Name: Anshula Mahajan (Solo project)
@@ -13,10 +11,13 @@
 House Price Prediction
 
 ## Section 1: Stakeholder
-Specific stakeholder: A retail bank loan officer at a 
-mid-sized Indian bank who needs to verify if a 
-property's declared sale price is realistic before 
-approving a home loan.
+A prospective home buyer or real estate agent in 
+Ames, Iowa looking to estimate fair market value 
+of a residential property.
+
+Note: This is a prototype and training exercise. 
+It does not claim to generalize to Indian housing 
+markets or support real lending decisions.
 
 ## Section 2: Main Outcome
 - Target variable: SalePrice (USD)
@@ -27,8 +28,9 @@ approving a home loan.
 
 ## Project Question
 Which features of a house (size, quality, location, 
-and amenities) best predict its sale price, and how 
-accurately can we predict SalePrice using these features?
+and amenities) best predict its sale price in Ames, 
+Iowa, and how accurately can we predict SalePrice 
+using these features?
 
 ## Project Type
 Predictive
@@ -69,9 +71,19 @@ held-out MAE at least 18% lower than the
 Linear Regression baseline ($24,541.69), 
 reaching MAE ≤ $20,000.
 
+## Section 6: Scope Limits
+We will not:
+- Make any causal claims about what drives house prices
+- Make any real lending or loan approval decisions
+- Claim that results generalize beyond Ames, Iowa 
+  (2006-2010) to Indian or other housing markets
+- Claim the model is production-ready
+
 ## Section 9: Reproducibility Commitment
 - Run command: uv run main.py
+- main.py runs the full analysis end to end
 - Primary output: outputs/primary_metric.json 
   with a passed boolean
-- README will contain exact run command
+- Baseline output: outputs/baseline_metric.json
+- README contains the exact run command
 - All outputs reproducible from one clean run
