@@ -1,5 +1,6 @@
  ## How to Run
-Open notebooks/house_price_prediction.ipynb in Google Colab and run all cells.
+uv sync
+uv run main.py
 
 ## Outputs
 - outputs/baseline_metric.json
