@@ -4,10 +4,10 @@
     {
       "name": "Kaggle House Prices Dataset",
       "status": "ok",
-      "probe_artifact": "train (1).csv"
+      "probe_artifact": "data/train (1).csv"
     }
   ],
   "baseline_ready": true,
   "primary_metric_schema_ready": true,
-  "run_command": "Run all cells in house_price_prediction.ipynb"
+  "run_command": "uv run main.py"
 }
