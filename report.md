@@ -1,52 +1,96 @@
 # Final Report
 
-Use this as the default shape. Keep it tight. The report should match what the code actually produced.
-
 ## 1. Question
+Which features of a house best predict its sale 
+price in Ames, Iowa, and how accurately can we 
+predict SalePrice using these features?
 
-What question did you ask, who cares about the answer, and what decision does it inform?
+The target stakeholder is a prospective home buyer 
+or real estate agent in Ames, Iowa who needs to 
+estimate fair market value of a property. This is 
+a prototype and training exercise. It does not 
+claim to generalize to Indian housing markets or 
+support real lending decisions.
 
 ## 2. Charter Summary
-
-- Project type:
-- Main metric:
-- Success threshold:
-- Baseline:
+- Project type: Predictive
+- Main metric: Mean Absolute Error (MAE) in USD
+- Success threshold: held-out MAE ≤ $20,000
+- Baseline: Linear Regression MAE = $24,541.69
 
 ## 3. Data
-
-List the main sources you used. Say how you accessed them. If a source changed or failed, say what you did instead.
+- Source: Kaggle House Prices - Advanced Regression 
+  Techniques dataset
+- Access: Manual download after Kaggle login
+- Training set: 1,460 residential properties sold 
+  in Ames, Iowa between 2006 and 2010
+- Features used: LotArea, OverallQual, GrLivArea, 
+  BedroomAbvGr, TotalBsmtSF, GarageArea
+- Target variable: SalePrice (USD)
+- No source failures or fallbacks were needed
 
 ## 4. Method
+**Baseline:** A Linear Regression model was trained 
+on 6 features using an 80/20 train/validation split 
+with random_state=42.
 
-Explain the baseline first. Then explain the main analysis. Keep it readable. If you used a causal design, state the assumptions. If you used a predictive model, state the evaluation split. If you used a descriptive design, state the comparison structure and sample discipline.
+**Main model:** A Random Forest with 100 trees was 
+trained on the same 6 features and same split. 
+Evaluation metric is MAE on the held-out 20% 
+validation set.
 
 ## 5. Result
+- Main metric value: $19,409.73
+- Threshold: $20,000
+- Passed: ✅ Yes
 
-- Main metric value:
-- Threshold:
-- Passed:
-
-Give the main number first. Then interpret it in plain English.
+The Random Forest model achieved a held-out MAE of 
+$19,409.73, which is a 20.9% improvement over the 
+Linear Regression baseline of $24,541.69. This 
+means on average the model's price estimate is 
+off by about $19,410 per house.
 
 ## 6. Evidence
+- Figure 1: Distribution of house sale prices 
+  (outputs/figure1_price_distribution.png)
+- Figure 2: Baseline vs Random Forest MAE comparison 
+  (outputs/figure2_model_comparison.png)
+- Figure 3: Feature importance scores 
+  (outputs/figure3_feature_importance.png)
 
-Point to the figures, tables, regressions, or diagnostics that support the result.
+OverallQual is the strongest predictor with an 
+importance score of ~0.59. GrLivArea is second 
+at ~0.20. BedroomAbvGr has the least predictive 
+power at ~0.01.
 
 ## 7. Limits
-
-What can this project say with confidence, and what can it not say?
+- Only 6 out of 80 available features were used
+- Results apply only to Ames, Iowa (2006-2010)
+- No causal claims are made about what drives prices
+- Model is not suitable for real lending decisions
+- Predictions may not generalize to other cities 
+  or time periods including Indian housing markets
 
 ## 8. If The Result Was Null Or Weak
-
-Say so directly. Do not force a story onto the data.
+The result was not null. The Random Forest passed 
+the threshold. However, an MAE of ~$19,410 means 
+meaningful error remains. Using all 80 features 
+would likely improve performance further.
 
 ## 9. Reproducibility
-
-- Run command:
-- Runtime:
+- Run command: uv run main.py
+- Runtime: approximately 30 seconds
 - Output files written:
+  - outputs/baseline_metric.json
+  - outputs/primary_metric.json
+  - outputs/milestone_manifest.json
+  - outputs/figure1_price_distribution.png
+  - outputs/figure2_model_comparison.png
+  - outputs/figure3_feature_importance.png
 
 ## 10. AI Usage
-
-Summarize the main places AI helped and what the team checked manually. Point to [AI_USAGE_LOG.md](./AI_USAGE_LOG.md) for the detailed log.
+AI was used for initial code structure and 
+formatting help. All results, numbers, and 
+outputs were verified manually.
+See [AI_USAGE_LOG.md](./AI_USAGE_LOG.md) 
+for the detailed log.
