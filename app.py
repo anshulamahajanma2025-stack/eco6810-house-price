@@ -1,15 +1,13 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
 
 # Load and train model
 @st.cache_resource
 def train_model():
-    df = pd.read_csv("train (1).csv")
+    df = pd.read_csv("data/train (1).csv")
     features = ["LotArea", "OverallQual", "GrLivArea", 
                 "BedroomAbvGr", "TotalBsmtSF", "GarageArea"]
     data = df[features + ["SalePrice"]].dropna()
@@ -51,11 +49,6 @@ st.subheader("What drives the price?")
 importance_df = pd.DataFrame({
     "Feature": features,
     "Importance": model.feature_importances_
-}).sort_values("Importance", ascending=True)
+}).sort_values("Importance", ascending=False)
 
-fig, ax = plt.subplots(figsize=(8, 4))
-ax.barh(importance_df["Feature"], importance_df["Importance"], 
-        color="steelblue")
-ax.set_xlabel("Importance Score")
-ax.set_title("Feature Importance")
-st.pyplot(fig)
+st.bar_chart(importance_df.set_index("Feature"))
